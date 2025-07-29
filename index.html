@@ -1,13 +1,13 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>Sam - Asistente Virtual de Campo</title>
+    <title>Asistente Sam</title>
     <style>
       body {
-        margin: 0;
         padding: 0;
+        margin: 0;
         overflow: hidden;
       }
 
@@ -28,29 +28,43 @@
       }
     </style>
   </head>
+
   <body>
-    <!-- Cargar script base de Botpress -->
     <script src="https://cdn.botpress.cloud/webchat/v3.1/inject.js"></script>
-
-    <!-- Inicializar el Webchat -->
     <script>
-      window.botpressWebChat.init({
-        botId: "5ab6bfaf-b7d5-4e97-a0c2-a80c54b68400",
-        hostUrl: "https://cdn.botpress.cloud/webchat/v3.1",
-        messagingUrl: "https://messaging.botpress.cloud",
-        clientId: "0277e27a-a889-4c9b-bb3d-3d684e69a828",
-        lazySocket: true,
-        showPoweredBy: false,
-        containerWidth: "100%",
-        layoutWidth: "100%",
-      });
+      try {
+        window.botpress.open()
+      } catch {}
 
-      // Abrir el chat automáticamente
-      window.addEventListener('message', function (event) {
-        if (event.data.name === 'webchatReady') {
-          window.botpressWebChat.sendEvent({ type: 'show' });
-        }
-      });
+      window.botpress.on('webchat:initialized', (event) => {
+        window.botpress.open()
+        let interval = setInterval(() => {
+          window.botpress.open()
+          if (window.botpress.state === 'opened') {
+            clearInterval(interval)
+          }
+        }, 50)
+        try {
+          const doc = window.botpress.webchatIframe.contentDocument
+          const style = doc.createElement('style')
+          style.innerHTML = `
+          .bpContainer {
+            border: none;
+          }
+
+          .bpHeaderContentContainer, .bpHeaderContainer, .bpContainer {
+            border: none;
+            border-radius: 0 !important;
+          }
+
+          .bpHeaderContentActionsIcons {
+            display: none;
+          }
+          `
+          doc.body.appendChild(style)
+        } catch {}
+      })
     </script>
+    <script src="https://files.bpcontent.cloud/2025/07/29/01/20250729012838-83NTP87K.js"></script>
   </body>
 </html>
